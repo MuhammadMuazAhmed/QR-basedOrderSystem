@@ -4,7 +4,7 @@ const helmet = require('helmet');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 
-const { clientUrl, nodeEnv } = require('./config/env');
+const { allowedOrigins, nodeEnv } = require('./config/env');
 const { notFound, errorHandler } = require('./middleware/errorHandler');
 
 const authRoutes = require('./routes/authRoutes');
@@ -14,8 +14,23 @@ const orderRoutes = require('./routes/orderRoutes');
 
 const app = express();
 
+const allowedOriginSet = new Set(allowedOrigins);
+
 app.use(helmet());
-app.use(cors({ origin: clientUrl, credentials: true }));
+app.use(
+  cors({
+    origin(origin, callback) {
+      if (!origin || allowedOriginSet.has(origin)) {
+        callback(null, true);
+        return;
+      }
+      callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 app.use(express.json({ limit: '1mb' }));
 if (nodeEnv !== 'test') app.use(morgan(nodeEnv === 'production' ? 'combined' : 'dev'));
 

@@ -1,5 +1,5 @@
 const { Server } = require('socket.io');
-const { clientUrl } = require('../config/env');
+const { allowedOrigins } = require('../config/env');
 
 let io = null;
 
@@ -14,7 +14,14 @@ const EVENTS = {
 function initSockets(httpServer) {
   io = new Server(httpServer, {
     cors: {
-      origin: clientUrl,
+      origin(origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+          return;
+        }
+        callback(new Error('Not allowed by Socket.IO CORS'));
+      },
+      credentials: true,
       methods: ['GET', 'POST'],
     },
   });
