@@ -1,19 +1,19 @@
 {
-  "/api/auth/me/route": "app/api/auth/me/route.js",
-  "/api/auth/login/route": "app/api/auth/login/route.js",
   "/api/health/route": "app/api/health/route.js",
-  "/api/menu/categories/route": "app/api/menu/categories/route.js",
   "/api/menu/categories/[id]/route": "app/api/menu/categories/[id]/route.js",
+  "/api/auth/login/route": "app/api/auth/login/route.js",
   "/api/menu/items/[id]/route": "app/api/menu/items/[id]/route.js",
-  "/api/menu/items/route": "app/api/menu/items/route.js",
   "/api/menu/route": "app/api/menu/route.js",
   "/api/orders/[id]/route": "app/api/orders/[id]/route.js",
   "/api/orders/route": "app/api/orders/route.js",
   "/api/orders/waiter-call/[id]/resolve/route": "app/api/orders/waiter-call/[id]/resolve/route.js",
-  "/api/orders/waiter-call/route": "app/api/orders/waiter-call/route.js",
+  "/api/auth/me/route": "app/api/auth/me/route.js",
+  "/api/menu/categories/route": "app/api/menu/categories/route.js",
   "/api/orders/waiter-calls/all/route": "app/api/orders/waiter-calls/all/route.js",
-  "/api/tables/[id]/regenerate/route": "app/api/tables/[id]/regenerate/route.js",
-  "/api/tables/[id]/status/route": "app/api/tables/[id]/status/route.js",
   "/api/tables/resolve/[token]/route": "app/api/tables/resolve/[token]/route.js",
-  "/api/tables/route": "app/api/tables/route.js"
+  "/api/tables/[id]/regenerate/route": "app/api/tables/[id]/regenerate/route.js",
+  "/api/menu/items/route": "app/api/menu/items/route.js",
+  "/api/tables/[id]/status/route": "app/api/tables/[id]/status/route.js",
+  "/api/tables/route": "app/api/tables/route.js",
+  "/api/orders/waiter-call/route": "app/api/orders/waiter-call/route.js"
 }
