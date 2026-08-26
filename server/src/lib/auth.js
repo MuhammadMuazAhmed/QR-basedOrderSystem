@@ -1,15 +1,18 @@
 import jwt from 'jsonwebtoken';
 import { ApiError } from './apiHandler';
 
-const JWT_SECRET = process.env.JWT_SECRET;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '12h';
 
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET is not set. Add it in your .env.local (dev) or Vercel project env vars (prod).');
+function getJwtSecret() {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error('JWT_SECRET is not set. Add it in your .env.local (dev) or Vercel project env vars (prod).');
+  }
+  return secret;
 }
 
 export function signStaffToken(payload) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+  return jwt.sign(payload, getJwtSecret(), { expiresIn: JWT_EXPIRES_IN });
 }
 
 // Throws ApiError(401) if missing/invalid. Returns the decoded { id, username, role }.
@@ -19,7 +22,7 @@ export function requireAuth(req) {
   if (!token) throw new ApiError(401, 'Not authorized — missing token');
 
   try {
-    return jwt.verify(token, JWT_SECRET);
+    return jwt.verify(token, getJwtSecret());
   } catch {
     throw new ApiError(401, 'Not authorized — invalid or expired token');
   }

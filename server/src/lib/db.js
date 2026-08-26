@@ -1,9 +1,11 @@
 import mongoose from 'mongoose';
 
-const MONGO_URI = process.env.MONGO_URI;
-
-if (!MONGO_URI) {
-  throw new Error('MONGO_URI is not set. Add it in your .env.local (dev) or Vercel project env vars (prod).');
+function getMongoUri() {
+  const uri = process.env.MONGO_URI;
+  if (!uri) {
+    throw new Error('MONGO_URI is not set. Add it in your .env.local (dev) or Vercel project env vars (prod).');
+  }
+  return uri;
 }
 
 // Serverless functions can be invoked many times concurrently and are
@@ -22,7 +24,7 @@ export async function connectDB() {
   if (!cached.promise) {
     mongoose.set('strictQuery', true);
     cached.promise = mongoose
-      .connect(MONGO_URI, { bufferCommands: false, maxPoolSize: 10 })
+      .connect(getMongoUri(), { bufferCommands: false, maxPoolSize: 10 })
       .then((m) => m);
   }
 
