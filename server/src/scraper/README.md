@@ -43,10 +43,8 @@ our schema, and upserts into MongoDB — tagging every imported item with
 `source: "blink-import"` and `sourceItemId` so re-running later updates
 prices/availability without creating duplicates.
 
-## Until then
+## Menu setup
 
-`npm run seed:dev` (local dev only) populates clearly-labeled placeholder
-menu items (`source: "placeholder"`) so you can build/test/demo the
-ordering flow. In production, create real menu items via the authenticated
-admin API (`POST /api/menu/categories`, `POST /api/menu/items`) once you
-have your admin account — see the root README's deployment guide.
+Create real menu items via the authenticated admin API
+(`POST /api/menu/categories`, `POST /api/menu/items`) once you have your
+admin account, or import the live Blink menu with `npm run import:menu`.

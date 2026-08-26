@@ -8,7 +8,6 @@
     "dev": "next dev --port 5000",
     "build": "next build",
     "start": "next start",
-    "seed:dev": "node src/scripts/seedDev.js",
     "generate:qrs": "node src/scripts/generateQRs.js",
     "import:menu": "node src/scripts/importMenu.js"
   },

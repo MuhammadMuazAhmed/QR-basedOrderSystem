@@ -48,13 +48,12 @@ install). Fill in `JWT_SECRET`, `SETUP_SECRET`, and Pusher dev credentials
 create one; you'll reuse the same steps).
 
 ```bash
-npm run seed:dev   # local dev only — refuses to run if NODE_ENV=production
 npm run dev        # http://localhost:5000
 ```
 
-`seed:dev` creates 10 tables, a placeholder menu, and throwaway dev
-accounts (`admin`/`admin123`, `cashier`/`cashier123`) purely so you don't
-have to call the setup endpoint by hand every time locally.
+Create the first admin account from the client cashier login screen using
+the `SETUP_SECRET` value configured on the server. Tables and menu data must
+be created separately with the scripts and admin APIs described below.
 
 ### 1b. Client
 
@@ -254,7 +253,6 @@ Vercel's paid features like team seats).
 |---|---|---|
 | server | `npm run dev` | Local Next.js dev server (API only) |
 | server | `npm run build` / `start` | Production build / run (Vercel does this for you) |
-| server | `npm run seed:dev` | Local-dev-only: tables + placeholder menu (refuses to run in production) |
 | server | `npm run generate:qrs` | Print + save table QR codes (works against local or Atlas DB) |
 | server | `npm run import:menu` | Import the live menu from Blink (needs credentials) |
 | client | `npm run dev` | Local Vite dev server |
