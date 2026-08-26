@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const waiterCallSchema = new mongoose.Schema(
   {
@@ -10,4 +10,4 @@ const waiterCallSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('WaiterCall', waiterCallSchema);
+export default mongoose.models.WaiterCall || mongoose.model('WaiterCall', waiterCallSchema);

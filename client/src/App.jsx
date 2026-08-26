@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom';
-import { SocketProvider } from './context/SocketContext';
+import { RealtimeProvider } from './context/RealtimeContext';
 import { CartProvider } from './context/CartContext';
 
 import LandingPage from './pages/LandingPage';
@@ -24,7 +24,7 @@ function RequireStaffAuth({ children }) {
 
 export default function App() {
   return (
-    <SocketProvider>
+    <RealtimeProvider>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<LandingPage />} />
@@ -69,6 +69,6 @@ export default function App() {
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </BrowserRouter>
-    </SocketProvider>
+    </RealtimeProvider>
   );
 }

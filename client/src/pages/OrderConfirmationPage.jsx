@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getOrder } from '../api/client';
-import { useSocket } from '../context/SocketContext';
+import { useRealtime } from '../context/RealtimeContext';
 import { PageSpinner, EmptyState } from '../components/Feedback';
 
 const STATUS_STEPS = ['pending', 'confirmed', 'preparing', 'ready', 'completed'];
@@ -16,7 +16,7 @@ const STATUS_LABEL = {
 
 export default function OrderConfirmationPage() {
   const { orderId } = useParams();
-  const { socket } = useSocket();
+  const { pusher } = useRealtime();
   const [order, setOrder] = useState(null);
   const [error, setError] = useState(null);
 
@@ -27,15 +27,21 @@ export default function OrderConfirmationPage() {
   }, [orderId]);
 
   useEffect(() => {
-    if (!socket || !order) return;
-    socket.emit('table:join', order.tableNumber);
+    if (!pusher || !order) return undefined;
 
+    // Each customer subscribes to their own table's channel — the server
+    // only publishes status updates there, not to every customer.
+    const channel = pusher.subscribe(`table-${order.tableNumber}`);
     const handler = (updated) => {
       if (updated._id === orderId) setOrder(updated);
     };
-    socket.on('order:status_updated', handler);
-    return () => socket.off('order:status_updated', handler);
-  }, [socket, order, orderId]);
+    channel.bind('order:status_updated', handler);
+
+    return () => {
+      channel.unbind('order:status_updated', handler);
+      pusher.unsubscribe(`table-${order.tableNumber}`);
+    };
+  }, [pusher, order, orderId]);
 
   if (error) {
     return (

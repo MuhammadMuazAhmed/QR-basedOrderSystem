@@ -1,5 +1,5 @@
-const mongoose = require('mongoose');
-const bcrypt = require('bcryptjs');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 
 const staffUserSchema = new mongoose.Schema(
   {
@@ -20,4 +20,4 @@ staffUserSchema.statics.hashPassword = function hashPassword(plain) {
   return bcrypt.hash(plain, 10);
 };
 
-module.exports = mongoose.model('StaffUser', staffUserSchema);
+export default mongoose.models.StaffUser || mongoose.model('StaffUser', staffUserSchema);

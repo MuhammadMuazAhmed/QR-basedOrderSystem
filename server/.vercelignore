@@ -1,5 +1,0 @@
-src/server.js
-src/app.js
-src/sockets/**
-src/routes/**
-src/middleware/**

@@ -1,12 +1,10 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
-// Snapshot of the item at order time so historical orders never change
-// even if the menu item's price/name changes later.
 const orderItemSchema = new mongoose.Schema(
   {
     menuItem: { type: mongoose.Schema.Types.ObjectId, ref: 'MenuItem', required: true },
     name: { type: String, required: true },
-    price: { type: Number, required: true }, // unit price at time of order
+    price: { type: Number, required: true },
     quantity: { type: Number, required: true, min: 1 },
     lineTotal: { type: Number, required: true },
   },
@@ -17,7 +15,7 @@ const orderSchema = new mongoose.Schema(
   {
     orderNumber: { type: String, required: true, unique: true },
     table: { type: mongoose.Schema.Types.ObjectId, ref: 'Table', required: true },
-    tableNumber: { type: Number, required: true }, // denormalized for fast dashboard display
+    tableNumber: { type: Number, required: true },
     items: { type: [orderItemSchema], required: true, validate: (v) => v.length > 0 },
     subtotal: { type: Number, required: true },
     total: { type: Number, required: true },
@@ -31,4 +29,4 @@ const orderSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-module.exports = mongoose.model('Order', orderSchema);
+export default mongoose.models.Order || mongoose.model('Order', orderSchema);

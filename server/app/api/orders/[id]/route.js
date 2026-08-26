@@ -1,12 +1,12 @@
-import { getOrder, updateOrderStatus } from '../../../../src/controllers/orderController';
-import { runExpressController } from '../../../../src/lib/nextApiAdapter';
+import { connectDB } from '@/src/lib/db';
+import Order from '@/src/models/Order';
+import { ok, ApiError, withHandler } from '@/src/lib/apiHandler';
 
-export async function GET(request, { params }) {
-  const result = await runExpressController(getOrder, request, params);
-  return Response.json(result.payload, { status: result.status });
-}
+export const dynamic = 'force-dynamic';
 
-export async function PATCH(request, { params }) {
-  const result = await runExpressController(updateOrderStatus, request, params);
-  return Response.json(result.payload, { status: result.status });
-}
+export const GET = withHandler(async (req, { params }) => {
+  await connectDB();
+  const order = await Order.findById(params.id);
+  if (!order) throw new ApiError(404, 'Order not found');
+  return ok(order);
+});

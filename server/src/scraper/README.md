@@ -25,29 +25,28 @@ needs to either:
 
 ## What's built and ready to use
 
-`importer.js` in this folder implements the full pipeline already, wired
-to Blink's actual documented endpoints (`GET /interface/v1/categories`
-and `GET /interface/v1/fetchMenu`, paginated). The moment you have
-credentials:
+`blinkClient.js` + `transformer.js` (used by `src/scripts/importMenu.js`)
+implement the full pipeline already, wired to Blink's actual documented
+endpoints (`GET /interface/v1/categories` and `GET /interface/v1/fetchMenu`,
+paginated). The moment you have credentials:
 
 ```bash
-# in server/.env
+# in server/.env.local (dev) or Vercel project env vars (prod)
 BLINK_USERNAME=xxxxx
 BLINK_PASSWORD=xxxxx
 
 npm run import:menu
 ```
 
-It will log in, pull every category and item, transform Blink's shape
-into our schema, and upsert it into MongoDB — tagging every imported item
-with `source: "blink-import"` and `sourceItemId` so re-running the import
-later updates prices/availability without creating duplicates.
+It logs in, pulls every category and item, transforms Blink's shape into
+our schema, and upserts into MongoDB — tagging every imported item with
+`source: "blink-import"` and `sourceItemId` so re-running later updates
+prices/availability without creating duplicates.
 
 ## Until then
 
-`npm run seed` populates a small set of **clearly-labeled placeholder**
-menu items (`source: "placeholder"`) covering the same style of cuisine,
-so you can build/test/demo the entire ordering flow today. Swap them out
-with a real `npm run import:menu` run whenever credentials are available
-— no code changes needed, the customer/cashier UI reads from the same
-`MenuItem` collection either way.
+`npm run seed:dev` (local dev only) populates clearly-labeled placeholder
+menu items (`source: "placeholder"`) so you can build/test/demo the
+ordering flow. In production, create real menu items via the authenticated
+admin API (`POST /api/menu/categories`, `POST /api/menu/items`) once you
+have your admin account — see the root README's deployment guide.

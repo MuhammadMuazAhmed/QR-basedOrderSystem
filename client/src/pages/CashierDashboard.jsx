@@ -1,14 +1,14 @@
 import { useEffect, useState, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { listOrders, updateOrderStatus, listWaiterCalls, resolveWaiterCall } from '../api/client';
-import { useSocket } from '../context/SocketContext';
+import { useRealtime } from '../context/RealtimeContext';
 import OrderTicket from '../components/OrderTicket';
 import Receipt from '../components/Receipt';
 import { EmptyState, PageSpinner } from '../components/Feedback';
 
 export default function CashierDashboard() {
   const navigate = useNavigate();
-  const { socket, connected } = useSocket();
+  const { pusher, connected } = useRealtime();
 
   const [orders, setOrders] = useState([]);
   const [calls, setCalls] = useState([]);
@@ -42,8 +42,9 @@ export default function CashierDashboard() {
   }, [loadAll]);
 
   useEffect(() => {
-    if (!socket) return;
-    socket.emit('staff:join');
+    if (!pusher) return undefined;
+
+    const channel = pusher.subscribe('staff-channel');
 
     const onNewOrder = (order) => setOrders((prev) => [order, ...prev]);
     const onStatusUpdated = (order) =>
@@ -51,23 +52,25 @@ export default function CashierDashboard() {
     const onWaiterCall = (call) => setCalls((prev) => [call, ...prev]);
     const onWaiterResolved = (call) => setCalls((prev) => prev.filter((c) => c._id !== call._id));
 
-    socket.on('order:new', onNewOrder);
-    socket.on('order:status_updated', onStatusUpdated);
-    socket.on('waiter:call', onWaiterCall);
-    socket.on('waiter:resolved', onWaiterResolved);
+    channel.bind('order:new', onNewOrder);
+    channel.bind('order:status_updated', onStatusUpdated);
+    channel.bind('waiter:call', onWaiterCall);
+    channel.bind('waiter:resolved', onWaiterResolved);
 
-    // Reconnect gracefully: re-sync full state whenever the socket (re)connects,
-    // so a dropped Wi-Fi connection doesn't leave the dashboard stale.
-    socket.on('connect', loadAll);
+    // Re-sync full state whenever the connection is (re)established, so a
+    // dropped Wi-Fi connection doesn't leave the dashboard stale — Pusher
+    // has no delivery guarantee for events missed while disconnected.
+    pusher.connection.bind('connected', loadAll);
 
     return () => {
-      socket.off('order:new', onNewOrder);
-      socket.off('order:status_updated', onStatusUpdated);
-      socket.off('waiter:call', onWaiterCall);
-      socket.off('waiter:resolved', onWaiterResolved);
-      socket.off('connect', loadAll);
+      channel.unbind('order:new', onNewOrder);
+      channel.unbind('order:status_updated', onStatusUpdated);
+      channel.unbind('waiter:call', onWaiterCall);
+      channel.unbind('waiter:resolved', onWaiterResolved);
+      pusher.connection.unbind('connected', loadAll);
+      pusher.unsubscribe('staff-channel');
     };
-  }, [socket, loadAll]);
+  }, [pusher, loadAll]);
 
   const handleAdvance = async (id, status) => {
     setOrders((prev) => prev.map((o) => (o._id === id ? { ...o, status } : o)));

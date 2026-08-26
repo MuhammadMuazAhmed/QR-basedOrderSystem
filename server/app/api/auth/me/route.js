@@ -1,27 +1,9 @@
-import { requireAuth } from '../../../../src/middleware/auth';
+import { ok, withHandler } from '@/src/lib/apiHandler';
+import { requireAuth } from '@/src/lib/auth';
 
-export async function GET(request) {
-  const authorization = request.headers.get('authorization');
-  const req = { headers: { authorization: authorization || '' } };
-  const res = {
-    json(payload) {
-      return payload;
-    },
-    status(code) {
-      this.statusCode = code;
-      return this;
-    },
-  };
+export const dynamic = 'force-dynamic';
 
-  try {
-    await new Promise((resolve, reject) => {
-      requireAuth(req, res, (err) => (err ? reject(err) : resolve()));
-    });
-    return Response.json({ success: true, data: req.staff || null });
-  } catch (error) {
-    return Response.json(
-      { success: false, message: error.message || 'Unauthorized' },
-      { status: error.statusCode || 401 }
-    );
-  }
-}
+export const GET = withHandler(async (req) => {
+  const staff = requireAuth(req);
+  return ok(staff);
+});

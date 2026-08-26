@@ -10,8 +10,6 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-export const SOCKET_URL = import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000';
-
 // ---- Public (customer) ----
 export const resolveTable = (token) => api.get(`/tables/resolve/${token}`).then((r) => r.data.data);
 export const getMenu = () => api.get('/menu').then((r) => r.data.data);

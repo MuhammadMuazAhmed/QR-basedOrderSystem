@@ -1,19 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // This project is an API-only backend (no UI). Route handlers under
+  // app/api/** are what matters — see middleware.js for CORS handling.
   reactStrictMode: true,
-  async headers() {
-    return [
-      {
-        source: '/api/:path*',
-        headers: [
-          { key: 'Access-Control-Allow-Origin', value: process.env.CLIENT_URL || 'http://localhost:5173' },
-          { key: 'Access-Control-Allow-Methods', value: 'GET,POST,PUT,PATCH,DELETE,OPTIONS' },
-          { key: 'Access-Control-Allow-Headers', value: 'Content-Type, Authorization' },
-          { key: 'Access-Control-Allow-Credentials', value: 'true' },
-        ],
-      },
-    ];
-  },
 };
 
-module.exports = nextConfig;
+export default nextConfig;

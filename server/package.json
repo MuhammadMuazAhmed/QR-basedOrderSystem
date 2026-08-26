@@ -1,26 +1,30 @@
 {
   "name": "qr-cafeteria-server",
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "description": "QR Cafeteria Ordering System — Next.js serverless API (deploys on Vercel)",
   "private": true,
-  "description": "Next.js serverless backend for the QR-based cafeteria ordering system",
+  "type": "module",
   "scripts": {
-    "dev": "next dev -p 3001",
+    "dev": "next dev --port 5000",
     "build": "next build",
-    "start": "next start -p 3001",
-    "seed": "node src/scripts/seed.js",
+    "start": "next start",
+    "seed:dev": "node src/scripts/seedDev.js",
     "generate:qrs": "node src/scripts/generateQRs.js",
-    "import:menu": "node src/scraper/importer.js"
+    "import:menu": "node src/scripts/importMenu.js"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.5.1",
     "nanoid": "^3.3.7",
     "next": "^14.2.15",
-    "qrcode": "^1.5.4",
-    "qrcode-terminal": "^0.12.0",
+    "pusher": "^5.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5",
+    "qrcode": "^1.5.4",
+    "qrcode-terminal": "^0.12.0"
   }
 }
