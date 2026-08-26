@@ -22,6 +22,8 @@ export const callWaiter = (tableToken) =>
 // ---- Staff ----
 export const staffLogin = (username, password) =>
   api.post('/auth/login', { username, password }).then((r) => r.data.data);
+export const setupStaffAccount = (payload) =>
+  api.post('/auth/setup', payload).then((r) => r.data.data);
 export const listOrders = (all = false) =>
   api.get(`/orders${all ? '?all=true' : ''}`).then((r) => r.data.data);
 export const updateOrderStatus = (id, status) =>
